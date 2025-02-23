@@ -1,14 +1,16 @@
-import User from "../models/user.model.js";
-import { generateToken } from "../lib/utils.js";
-import cloudinary from '../lib/cloudinary.js' ;
 
-import bcrypt from "bcrypt";
+import { generateToken } from "../lib/utils.js";
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import cloudinary from "../lib/cloudinary.js";
 
 // ========================== signup ===================
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
 
   try {
+    console.log(res,"res");
+    
     // Validate input
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -57,11 +59,9 @@ export const signup = async (req, res) => {
       res.status(400).json({ message: "Invalid user data" });
     }
   } catch (error) {
-    console.error("Error in signup controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 // =================== login =====================
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -99,6 +99,7 @@ export const login = async (req, res) => {
 export const logout = (req, res) => {
   try {
     res.cookie("jwt","",{maxAge:0})
+    res.clearCookie("token");
     res.status(200).json({message:"Logout successfully"})
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
